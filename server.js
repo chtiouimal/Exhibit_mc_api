@@ -8,8 +8,7 @@ const PORT = process.env.PORT || 3000
 
 app.use(
   cors({
-    origin: "http://127.0.0.1:5173",
-    methods: ["GET", "POST", "PUT", "DELETE"],
+    origin: "*",
   }),
 )
 app.use(express.json())
