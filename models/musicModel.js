@@ -1,4 +1,4 @@
-const mongoose = require("mongoose");
+const mongoose = require("mongoose")
 
 const musicSchema = mongoose.Schema(
   {
@@ -16,7 +16,7 @@ const musicSchema = mongoose.Schema(
     },
     color: {
       type: String,
-      required: [true, "Please select the song's background color"],
+      default: "",
     },
     music: {
       type: String,
@@ -28,8 +28,8 @@ const musicSchema = mongoose.Schema(
     },
   },
   { timestamps: true },
-);
+)
 
-const Music = mongoose.model("Music", musicSchema);
+const Music = mongoose.model("Music", musicSchema)
 
-module.exports = Music;
+module.exports = Music
