@@ -54,7 +54,7 @@ router.put("/music/:id", async (req, res) => {
   }
 })
 
-router.put("/select", async (req, res) => {
+router.put("/select/:id", async (req, res) => {
   try {
     // await Music.updateMany({}, { $set: { selected: false } })
     // const selected = await Music.updateMany(
@@ -62,13 +62,13 @@ router.put("/select", async (req, res) => {
     //   { $set: { selected: true } },
     // )
 
-    const selected = await Music.findById(req.body)
+    const { id } = req.params
+    const selectedMusic = await Music.findById(id)
     if (!selected) {
       return res.status(404).json({ message: "cannot find the song" })
     }
-
     await Music.findByIdAndUpdate(id, {
-      ...selected,
+      ...selectedMusic,
       selected: true,
     })
     // const updatedMusic = await Music.findById(id);
