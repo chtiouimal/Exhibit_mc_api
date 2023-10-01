@@ -64,7 +64,7 @@ router.put("/select/:id", async (req, res) => {
 
     const { id } = req.params
     const selectedMusic = await Music.findById(id)
-    if (!selected) {
+    if (!selectedMusic) {
       return res.status(404).json({ message: "cannot find the song" })
     }
     await Music.findByIdAndUpdate(id, {
