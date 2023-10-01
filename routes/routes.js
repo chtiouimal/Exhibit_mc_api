@@ -72,6 +72,24 @@ router.put("/select", async (req, res) => {
   }
 })
 
+router.put("/unselect", async (req, res) => {
+  try {
+    await Music.updateMany({}, { $set: { selected: false } })
+    const unselected = await Music.updateMany(
+      { _id: { $in: req.body } },
+      { $set: { selected: false } },
+    )
+    if (!unselected) {
+      return res.status(404).json({ message: "cannot find the song" })
+    }
+    // const updatedMusic = await Music.findById(id);
+    // res.status(200).json(updatedMusic);
+    res.status(200).json({ message: "Songs unselected successfuly" })
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
+
 router.delete("/music/:id", async (req, res) => {
   try {
     const { id } = req.params
