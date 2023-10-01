@@ -54,40 +54,19 @@ router.put("/music/:id", async (req, res) => {
   }
 })
 
-router.put("/select/:id", async (req, res) => {
-  try {
-    // await Music.updateMany({}, { $set: { selected: false } })
-    // const selected = await Music.updateMany(
-    //   { _id: { $in: req.body } },
-    //   { $set: { selected: true } },
-    // )
-
-    const { id } = req.params
-    const selectedMusic = await Music.findById(id, req.body)
-    if (!selectedMusic) {
-      return res.status(404).json({ message: "cannot find the song" })
-    }
-    // const updatedMusic = await Music.findById(id);
-    // res.status(200).json(updatedMusic);
-    res.status(200).json({ message: "Songs selected successfuly" })
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
-
-router.put("/unselect", async (req, res) => {
+router.put("/select", async (req, res) => {
   try {
     await Music.updateMany({}, { $set: { selected: false } })
     const selected = await Music.updateMany(
       { _id: { $in: req.body } },
-      { $set: { selected: false } },
+      { $set: { selected: true } },
     )
     if (!selected) {
       return res.status(404).json({ message: "cannot find the song" })
     }
     // const updatedMusic = await Music.findById(id);
     // res.status(200).json(updatedMusic);
-    res.status(200).json({ message: "Songs deselected successfuly" })
+    res.status(200).json({ message: "Songs selected successfuly" })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
