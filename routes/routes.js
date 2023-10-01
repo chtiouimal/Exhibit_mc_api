@@ -74,10 +74,10 @@ router.put("/select", async (req, res) => {
 
 router.put("/unselect", async (req, res) => {
   try {
-    await Music.updateMany({}, { $set: { selected: true } })
+    await Music.updateMany({}, { $set: { selected: false } })
     const selected = await Music.updateMany(
       { _id: { $in: req.body } },
-      { $set: { selected: false } },
+      { $set: { selected: true } },
     )
     if (!selected) {
       return res.status(404).json({ message: "cannot find the song" })
