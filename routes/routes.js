@@ -56,12 +56,6 @@ router.put("/music/:id", async (req, res) => {
 
 router.put("/select", async (req, res) => {
   try {
-    // await Music.updateMany({}, { $set: { selected: false } })
-    // const selected = await Music.updateMany(
-    //   { _id: { $in: req.body } },
-    //   { $set: { selected: true } },
-    // )
-
     const musicId = req.body.musicId
     const selected = await Music.findOneAndUpdate(
       { _id: musicId },
@@ -72,8 +66,6 @@ router.put("/select", async (req, res) => {
     if (!selected) {
       return res.status(404).json({ message: "cannot find the song" })
     }
-    // const updatedMusic = await Music.findById(id);
-    // res.status(200).json(updatedMusic);
     res.status(200).json({ message: "Song selected successfuly" })
   } catch (error) {
     res.status(500).json({ message: error.message })
@@ -82,10 +74,12 @@ router.put("/select", async (req, res) => {
 
 router.put("/unselect", async (req, res) => {
   try {
-    await Music.updateMany({}, { $set: { selected: false } })
-    const unselected = await Music.updateMany(
-      { _id: { $in: req.body } },
-      { $set: { selected: false } },
+    const musicId = req.body.musicId
+    const unselected = await Music.findOneAndUpdate(
+      { _id: musicId },
+      {
+        $set: { selected: false },
+      },
     )
     if (!unselected) {
       return res.status(404).json({ message: "cannot find the song" })
