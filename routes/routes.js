@@ -62,9 +62,13 @@ router.put("/select", async (req, res) => {
     //   { $set: { selected: true } },
     // )
 
-    const selected = await Music.update(req.body, {
-      $set: { selected: true },
-    })
+    const musicId = req.body.musicId
+    const selected = await Music.findOneAndUpdate(
+      { _id: musicId },
+      {
+        $set: { selected: true },
+      },
+    )
     if (!selected) {
       return res.status(404).json({ message: "cannot find the song" })
     }
