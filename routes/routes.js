@@ -62,7 +62,7 @@ router.put("/select", async (req, res) => {
     //   { $set: { selected: true } },
     // )
 
-    const selected = await Music.findByIdAndUpdate(req.body, {
+    const selected = await Music.update(req.body, {
       $set: { selected: true },
     })
     if (!selected) {
