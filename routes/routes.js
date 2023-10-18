@@ -60,7 +60,7 @@ router.put("/select", async (req, res) => {
     const selected = await Music.findOneAndUpdate(
       { _id: musicId },
       {
-        $set: { selected: true },
+        $set: { selected: true, position: 0 },
       },
     )
     if (!selected) {
@@ -78,7 +78,7 @@ router.put("/unselect", async (req, res) => {
     const unselected = await Music.findOneAndUpdate(
       { _id: musicId },
       {
-        $set: { selected: false },
+        $set: { selected: false, position: -1 },
       },
     )
     if (!unselected) {

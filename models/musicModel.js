@@ -26,6 +26,14 @@ const musicSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    position: {
+      type: Number,
+      default: -1,
+    },
+    likes: {
+      type: Number,
+      default: 0,
+    },
   },
   { timestamps: true },
 )
