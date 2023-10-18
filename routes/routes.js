@@ -56,11 +56,11 @@ router.put("/music/:id", async (req, res) => {
 
 router.put("/select", async (req, res) => {
   try {
-    const musicId = req.body.musicId
+    const { musicId, position } = req.body
     const selected = await Music.findOneAndUpdate(
       { _id: musicId },
       {
-        $set: { selected: true, position: 0 },
+        $set: { selected: true, position: position },
       },
     )
     if (!selected) {
