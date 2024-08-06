@@ -14,6 +14,10 @@ const musicSchema = mongoose.Schema(
       type: String,
       required: [true, "Please enter the song's image"],
     },
+    thumbnail: {
+      type: String,
+      default: null,
+    },
     color: {
       type: String,
       default: "",
