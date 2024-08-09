@@ -38,6 +38,10 @@ const musicSchema = mongoose.Schema(
       type: Number,
       default: 0,
     },
+    category: {
+      type: Number,
+      required: [true, "Please select the category of your art"]
+    }
   },
   { timestamps: true },
 )
