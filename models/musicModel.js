@@ -24,7 +24,11 @@ const musicSchema = mongoose.Schema(
     },
     music: {
       type: String,
-      required: [true, "Please enter the song's file"],
+      // required: [true, "Please enter the song's file"],
+      required: function () {
+        return this.category === 0;
+      },
+      default: null,
     },
     selected: {
       type: Boolean,
