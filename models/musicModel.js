@@ -30,6 +30,12 @@ const musicSchema = mongoose.Schema(
       },
       default: null,
     },
+    video: {
+      type: String,
+      required: function () {
+        return this.category === 3
+      },
+    },
     selected: {
       type: Boolean,
       default: false,
