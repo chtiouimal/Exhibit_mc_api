@@ -3,6 +3,7 @@ const sharp = require('sharp');
 const axios = require('axios');
 const Music = require("../models/musicModel");
 const uploadToFirebase = require("../services/uploadService");
+const authMiddleware = require("../middleware/authMiddleware");
 const router = express.Router()
 
 

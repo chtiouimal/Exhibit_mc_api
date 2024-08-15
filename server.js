@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use("/", require("./routes/routes"))
 
+app.use("/users", require("./routes/authRoutes"))
+
 // mongoose.set("strictQuery", false);
 mongoose
   .connect(process.env.DB_URI)
