@@ -1,59 +1,77 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
-const User = require('../models/userModel');
 const authMiddleware = require('../middleware/authMiddleware');
+const Account = require('../models/accountModel');
+const User = require('../models/userModel');
 
 const router = express.Router();
 
-// Register a new user
+// Register a new account
 router.post('/register', async (req, res) => {
-  const { firstName, lastName, email, password } = req.body;
+  const { username, email, password } = req.body;
 
   try {
-    const userExists = await User.findOne({ email });
+    const accountExists = await Account.findOne({ email });
 
-    if (userExists) {
+    if (accountExists) {
       return res.status(400).json({ message: 'User already exists' });
     }
 
     const user = await User.create({
-      firstName,
-      lastName,
-      email,
-      password,
+      firstName: null,
+      lastName: null,
+      profession: null
     });
 
     if (user) {
-      const token = generateToken(user._id);
-      res.status(201).json({
-        _id: user._id,
-        firstName: user.firstName,
-        lastName: user.lastName,
-        email: user.email,
-        token,
+      const account = await Account.create({
+        username,
+        email,
+        password,
+        user: user._id
       });
-    } else {
-      res.status(400).json({ message: 'Invalid user data' });
+      
+      if (account) {
+        const token = generateToken(account._id);
+        res.status(201).json({
+          _id: account._id,
+          username: account.username,
+          email: account.email,
+          role: account.role,
+          user: user,
+          token,
+        });
+      } else {
+        res.status(400).json({ message: 'Invalid account data' });
+      }
     }
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
 });
 
-// Login user
+// Login account
 router.post('/login', async (req, res) => {
   const { email, password } = req.body;
 
   try {
-    const user = await User.findOne({ email });
+    const account = await Account.findOne({ email }).populate('user').exec();
 
-    if (user && (await user.matchPassword(password))) {
-      const token = generateToken(user._id);
+    if (account && (await account.matchPassword(password))) {
+      const token = generateToken(account._id);
+      
+      const accountData = account.toObject();
       res.json({
-        _id: user._id,
-        username: user.username,
-        email: user.email,
+        account: {
+          _id: accountData._id,
+          username: accountData.username,
+          email: accountData.email,
+          role: accountData.role,
+          createdAt: accountData.createdAt,
+          updatedAt: accountData.updatedAt,
+          user: accountData.user, // This will be the full populated User object
+        },
         token,
       });
     } else {
