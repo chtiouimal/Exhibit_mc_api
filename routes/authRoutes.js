@@ -1,6 +1,5 @@
 const express = require('express');
 const jwt = require('jsonwebtoken');
-const bcrypt = require('bcryptjs');
 const authMiddleware = require('../middleware/authMiddleware');
 const Account = require('../models/accountModel');
 const User = require('../models/userModel');
@@ -70,7 +69,7 @@ router.post('/login', async (req, res) => {
           role: accountData.role,
           createdAt: accountData.createdAt,
           updatedAt: accountData.updatedAt,
-          user: accountData.user, // This will be the full populated User object
+          user: accountData.user,
         },
         token,
       });
@@ -87,6 +86,20 @@ router.get('/profile', authMiddleware, async (req, res) => {
   const user = await User.findById(req.user._id).select('-password');
   res.json(user);
 });
+
+router.put('/profile/:id', authMiddleware, async (req,res) => {
+  const { id } = req.params;
+  try {
+    const user = await User.findByIdAndUpdate(id, req.body)
+    if (!user) {
+      return res.status(404).json({ message: "cannot find the requested user" })
+    }
+    const updatedUser = await User.findById(id)
+    res.status(200).json(updatedUser)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
 
 // Generate JWT
 const generateToken = (id) => {

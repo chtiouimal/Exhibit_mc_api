@@ -1,42 +1,43 @@
 const express = require("express")
 const sharp = require('sharp');
 const axios = require('axios');
-const Music = require("../models/musicModel");
+const authMiddleware = require("../middleware/authMiddleware")
 const uploadToFirebase = require("../services/uploadService");
+const Art = require("../models/artModel")
+
 const router = express.Router()
 
-
-
-router.get("/musics", async (req, res) => {
+router.get("/arts/:userId", authMiddleware, async (req, res) => {
+  const userId = req.params.userId;
   try {
-    const musics = await Music.find({})
-    res.status(200).json(musics)
+    const arts = await Art.find({ user: userId });
+    res.status(200).json(arts)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
-router.get("/musics/selected", async (req, res) => {
+router.get("/art/:id", authMiddleware, async (req, res) => {
   try {
-    const musics = await Music.find({})
-    const selected = musics.filter((e) => e.selected === true)
+    const { id } = req.params
+    const art = await Art.findById(id)
+    res.status(200).json(art)
+  } catch (error) {
+    res.status(500).json({ message: error.message })
+  }
+})
+
+router.get("/arts/selected", async (req, res) => {
+  try {
+    const arts = await Art.find({})
+    const selected = arts.filter((e) => e.selected === true)
     res.status(200).json(selected)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
-router.get("/music/:id", async (req, res) => {
-  try {
-    const { id } = req.params
-    const music = await Music.findById(id)
-    res.status(200).json(music)
-  } catch (error) {
-    res.status(500).json({ message: error.message })
-  }
-})
-
-router.post("/music", async (req, res) => {
+router.post("/art/create", authMiddleware, async (req, res) => {
   try {
       const { coverArt, ...otherFields } = req.body;
             // Fetch the original cover art image from the cloud
@@ -51,13 +52,13 @@ router.post("/music", async (req, res) => {
       // Upload the thumbnail to Firebase Storage
       const thumbnailUrl = await uploadToFirebase(thumbnailBuffer, `thumbnails/${Date.now()}_thumbnail.jpg`);
       // Create a new music item in the database
-      const music = await Music.create({
+      const art = await Art.create({
         ...otherFields,
         coverArt: coverArt,
         thumbnail: thumbnailUrl
       });
 
-      res.status(200).json(music);
+      res.status(200).json(art);
 
   } catch (error) {
     console.error('Error processing image:', error);
@@ -65,25 +66,25 @@ router.post("/music", async (req, res) => {
   }
 });
 
-router.put("/music/:id", async (req, res) => {
-  const { id } = req.params
+router.put("/art/:id", authMiddleware, async (req, res) => {
   try {
-    const music = await Music.findByIdAndUpdate(id, req.body)
-    if (!music) {
-      return res.status(404).json({ message: "cannot find the song" })
+    const { id } = req.params
+    const art = await Art.findByIdAndUpdate(id, req.body)
+    if (!art) {
+      return res.status(404).json({ message: "cannot find the requested art" })
     }
-    const updatedMusic = await Music.findById(id)
-    res.status(200).json(updatedMusic)
+    const updatedArt = await Art.findById(id)
+    res.status(200).json(updatedArt)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
-router.put("/select", async (req, res) => {
+router.put("/art/select", authMiddleware, async (req, res) => {
   try {
-    const { musicId, position } = req.body
-    const selected = await Music.findOneAndUpdate(
-      { _id: musicId },
+    const { artId, position } = req.body
+    const selected = await Art.findOneAndUpdate(
+      { _id: artId },
       {
         $set: { selected: true, position: position },
       },
@@ -97,34 +98,32 @@ router.put("/select", async (req, res) => {
   }
 })
 
-router.put("/unselect", async (req, res) => {
+router.put("/unselect", authMiddleware, async (req, res) => {
   try {
-    const musicId = req.body.musicId
-    const unselected = await Music.findOneAndUpdate(
-      { _id: musicId },
+    const artId = req.body.artId
+    const unselected = await Art.findOneAndUpdate(
+      { _id: artId },
       {
         $set: { selected: false, position: -1 },
       },
     )
     if (!unselected) {
-      return res.status(404).json({ message: "cannot find the song" })
+      return res.status(404).json({ message: "cannot find the requested art" })
     }
-    // const updatedMusic = await Music.findById(id);
-    // res.status(200).json(updatedMusic);
-    res.status(200).json({ message: "Songs unselected successfuly" })
+    res.status(200).json({ message: "art unselected successfuly" })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
-router.delete("/music/:id", async (req, res) => {
+router.delete("/art/:id", authMiddleware, async (req, res) => {
   try {
     const { id } = req.params
-    const music = await Music.findByIdAndDelete(id)
-    if (!music) {
-      return res.status(404).json({ message: "cannot find the song" })
+    const art = await Art.findByIdAndDelete(id)
+    if (!art) {
+      return res.status(404).json({ message: "cannot find the requested art" })
     }
-    res.status(200).json({ message: "Song deleted" })
+    res.status(200).json({ message: "art deleted" })
   } catch (error) {
     res.status(500).json({ message: error.message })
   }

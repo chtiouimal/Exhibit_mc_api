@@ -16,6 +16,8 @@ app.use(express.urlencoded({ extended: false }))
 
 app.use("/", require("./routes/routes"))
 
+app.use("/api", require("./routes/artRoutes"))
+
 app.use("/users", require("./routes/authRoutes"))
 
 // mongoose.set("strictQuery", false);
