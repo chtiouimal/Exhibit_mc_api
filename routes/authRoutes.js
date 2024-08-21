@@ -81,9 +81,11 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
 // Get user profile
-router.get('/profile', authMiddleware, async (req, res) => {
-  const user = await User.findById(req.user._id).select('-password');
+router.get('/profile/:id', authMiddleware, async (req, res) => {
+  const {id} = req.params
+  const user = await User.findById(id);
   res.json(user);
 });
 
