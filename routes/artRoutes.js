@@ -10,7 +10,7 @@ const router = express.Router()
 router.get("/arts/:userId", authMiddleware, async (req, res) => {
   const userId = req.params.userId;
   try {
-    const arts = await Art.find({ user: userId });
+    const arts = await Art.find({ userId: userId });
     res.status(200).json(arts)
   } catch (error) {
     res.status(500).json({ message: error.message })
