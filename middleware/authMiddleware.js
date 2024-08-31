@@ -2,6 +2,7 @@ const jwt = require('jsonwebtoken');
 const User = require('../models/userModel');
 
 const authMiddleware = async (req, res, next) => {
+  req.models = {};
   let token;
 
   if (
@@ -12,7 +13,7 @@ const authMiddleware = async (req, res, next) => {
       token = req.headers.authorization.split(' ')[1];
       const decoded = jwt.verify(token, process.env.JWT_SECRET);
 
-      req.user = await User.findById(decoded.id).select('-password');
+      req.user = await req.db.model('User', User.schema).findById(decoded.id).select('-password');
       next();
     } catch (error) {
       console.error(error);
