@@ -162,7 +162,7 @@ router.post('/login', withModel({ Account: Account.schema, User: User.schema }),
 //   res.json(user);
 // });
 
-router.get('/profile/:id', withModel({ User: User.schema }), authMiddleware, async (req, res) => {
+router.get('/profile/:id', authMiddleware,  withModel({ User: User.schema }), async (req, res) => {
   const {id} = req.params
   const user = await req.models.User.findById(id);
   res.json(user);
