@@ -3,22 +3,23 @@ const sharp = require('sharp');
 const axios = require('axios');
 const Music = require("../models/musicModel");
 const uploadToFirebase = require("../services/uploadService");
+const withModel = require("../middleware/withModel");
 const router = express.Router()
 
 
 
-router.get("/musics", async (req, res) => {
+router.get("/musics", withModel({ Music: Music.schema }), async (req, res) => {
   try {
-    const musics = await Music.find({})
+    const musics = await req.models.Music.find({})
     res.status(200).json(musics)
   } catch (error) {
     res.status(500).json({ message: error.message })
   }
 })
 
-router.get("/musics/selected", async (req, res) => {
+router.get("/musics/selected", withModel({ Music: Music.schema }), async (req, res) => {
   try {
-    const musics = await Music.find({})
+    const musics = await req.models.Music.find({})
     const selected = musics.filter((e) => e.selected === true)
     res.status(200).json(selected)
   } catch (error) {

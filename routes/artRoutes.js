@@ -22,7 +22,7 @@ const router = express.Router()
 router.get("/arts/:userId", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   const userId = req.params.userId;
   try {
-    const arts = await req.Models.Art.find({ userId: userId });
+    const arts = await req.models.Art.find({ userId: userId });
     res.status(200).json(arts);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -42,7 +42,7 @@ router.get("/arts/:userId", authMiddleware, withModel({ Art: Art.schema }), asyn
 router.get("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const { id } = req.params;
-    const art = await req.Models.Art.findById(id);
+    const art = await req.models.Art.findById(id);
     res.status(200).json(art);
   } catch (error) {
     res.status(500).json({ message: error.message });
@@ -61,7 +61,7 @@ router.get("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (re
 
 router.get("/arts/selected", withModel({ Art: Art.schema }), async (req, res) => {
   try {
-    const arts = await req.Models.Art.find({});
+    const arts = await req.models.Art.find({});
     const selected = arts.filter((e) => e.selected === true);
     res.status(200).json(selected);
   } catch (error) {
