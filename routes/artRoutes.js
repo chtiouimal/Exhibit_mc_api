@@ -241,7 +241,7 @@ router.put("/art/select", authMiddleware, withModel({ Art: Art.schema }), async 
 //   }
 // })
 
-router.put("/unselect", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
+router.put("/art/unselect", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const artId = req.body.artId
     const unselected = await req.models.Art.findOneAndUpdate(
