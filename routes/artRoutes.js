@@ -63,7 +63,6 @@ router.get("/arts/selected/:id", withModel({ Art: Art.schema }), async (req, res
   const userId = req.params.userId;
   try {
     const arts = await req.models.Art.find({ userId: userId });
-    console.log(arts)
     const selected = arts.filter((e) => e.selected === true);
     res.status(200).json(selected);
   } catch (error) {
@@ -177,7 +176,7 @@ router.post("/art/create/:userId", authMiddleware, withModel({ Art: Art.schema, 
 router.put("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const { id } = req.params
-    const art = await req.Models.Art.findByIdAndUpdate(id, req.body)
+    const art = await req.models.Art.findByIdAndUpdate(id, req.body)
     if (!art) {
       return res.status(404).json({ message: "cannot find the requested art" })
     }
@@ -209,7 +208,7 @@ router.put("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (re
 router.put("/art/select", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const { artId, position } = req.body
-    const selected = await req.Models.Art.findOneAndUpdate(
+    const selected = await req.models.Art.findOneAndUpdate(
       { _id: artId },
       {
         $set: { selected: true, position: position },
@@ -245,7 +244,7 @@ router.put("/art/select", authMiddleware, withModel({ Art: Art.schema }), async 
 router.put("/unselect", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const artId = req.body.artId
-    const unselected = await req.Models.Art.findOneAndUpdate(
+    const unselected = await req.models.Art.findOneAndUpdate(
       { _id: artId },
       {
         $set: { selected: false, position: -1 },
@@ -276,7 +275,7 @@ router.put("/unselect", authMiddleware, withModel({ Art: Art.schema }), async (r
 router.delete("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
     const { id } = req.params
-    const art = await req.Models.Art.findByIdAndDelete(id)
+    const art = await req.models.Art.findByIdAndDelete(id)
     if (!art) {
       return res.status(404).json({ message: "cannot find the requested art" })
     }
