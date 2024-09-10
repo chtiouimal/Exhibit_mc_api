@@ -59,10 +59,11 @@ router.get("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (re
 //   }
 // })
 
-router.get("/arts/selected:/id", withModel({ Art: Art.schema }), async (req, res) => {
+router.get("/arts/selected/:id", withModel({ Art: Art.schema }), async (req, res) => {
   const userId = req.params.userId;
   try {
     const arts = await req.models.Art.find({ userId: userId });
+    console.log(arts)
     const selected = arts.filter((e) => e.selected === true);
     res.status(200).json(selected);
   } catch (error) {
