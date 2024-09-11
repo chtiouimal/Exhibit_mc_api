@@ -205,11 +205,12 @@ router.put("/art/:id", authMiddleware, withModel({ Art: Art.schema }), async (re
 //   }
 // })
 
-router.put("/art/select", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
+router.put("/art/select/:id", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
-    const { artId, position } = req.body
+    const { id } = req.params
+    const { position } = req.body
     const selected = await req.models.Art.findOneAndUpdate(
-      { _id: artId },
+      { _id: id },
       {
         $set: { selected: true, position: position },
       },
@@ -241,11 +242,11 @@ router.put("/art/select", authMiddleware, withModel({ Art: Art.schema }), async 
 //   }
 // })
 
-router.put("/art/unselect", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
+router.put("/art/unselect/:id", authMiddleware, withModel({ Art: Art.schema }), async (req, res) => {
   try {
-    const artId = req.body.artId
+    const { id } = req.params
     const unselected = await req.models.Art.findOneAndUpdate(
-      { _id: artId },
+      { _id: id },
       {
         $set: { selected: false, position: -1 },
       },
