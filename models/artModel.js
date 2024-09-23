@@ -26,15 +26,9 @@ const artSchema = mongoose.Schema(
       type: String,
       // required: [true, "Please enter the song's file"],
       required: function () {
-        return this.category === 0;
+        return this.category === 0 || this.category === 3;
       },
       default: null,
-    },
-    video: {
-      type: String,
-      required: function () {
-        return this.category === 3
-      },
     },
     selected: {
       type: Boolean,
